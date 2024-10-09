@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './TaskBoard.css';
 
+// Initial Task Data
 const initialTasks = [
   { id: 'task-1', content: 'Test Task 1' },
   { id: 'task-2', content: 'Test Task 2' },
@@ -15,6 +16,7 @@ const initialTasks = [
   { id: 'task-10', content: 'Test Task 10' },
 ];
 
+// Initial Columns Setup
 const initialColumns = {
   unplanned: {
     name: 'Unplanned',
