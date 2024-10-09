@@ -1,44 +1,47 @@
-/* src/components/TaskBoard.css */
 .task-board {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-  }
-  
-  .column {
-    width: 200px;
-  }
-  
-  h2 {
-    text-align: center;
-    background: #f8f8f8;
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  .task-list {
-    background: #f4f4f4;
-    border: 1px solid #ddd;
-    min-height: 500px;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .task-list.dragging {
-    background-color: lightblue;
-  }
-  
-  .task-item {
-    padding: 10px;
-    margin: 0 0 8px 0;
-    background: #fff;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .task-item:hover {
-    background-color: #f0f0f0;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #f4f5f7;
+}
+
+.column {
+  flex: 1;
+  margin: 0 10px;
+  background: #ebecf0;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.column h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.task-list {
+  min-height: 300px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.task-list.dragging {
+  background-color: #e3f7e1;
+}
+
+.task-item {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  cursor: grab;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-item.dragging {
+  background-color: #81c784;
+  cursor: grabbing;
+}

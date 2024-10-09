@@ -1,4 +1,3 @@
-// src/components/TaskBoard.js
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './TaskBoard.css';
@@ -105,13 +104,12 @@ const TaskBoard = () => {
                       >
                         {(provided, snapshot) => (
                           <div
-                            className="task-item"
+                            className={`task-item ${
+                              snapshot.isDragging ? 'dragging' : ''
+                            }`}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            style={{
-                              ...provided.draggableProps.style,
-                            }}
                           >
                             {item.content}
                           </div>
