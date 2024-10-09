@@ -42,89 +42,86 @@ const initialColumns = {
 
 const TaskBoard = () => {
   const [columns, setColumns] = useState(initialColumns);
+  const [newTask, setNewTask] = useState('');
 
-  const onDragEnd = (result, columns, setColumns) => {
+  const onDragEnd = (result) => {
     if (!result.destination) return;
     const { source, destination } = result;
 
-    if (source.droppableId !== destination.droppableId) {
-      const sourceColumn = columns[source.droppableId];
-      const destColumn = columns[destination.droppableId];
-      const sourceItems = [...sourceColumn.items];
-      const destItems = [...destColumn.items];
-      const [removed] = sourceItems.splice(source.index, 1);
+    const sourceColumn = columns[source.droppableId];
+    const destColumn = columns[destination.droppableId];
+    const sourceItems = [...sourceColumn.items];
+    const destItems = destination.droppableId !== source.droppableId ? [...destColumn.items] : sourceItems;
+
+    const [removed] = sourceItems.splice(source.index, 1);
+    if (destination.droppableId !== source.droppableId) {
       destItems.splice(destination.index, 0, removed);
-      setColumns({
-        ...columns,
-        [source.droppableId]: {
-          ...sourceColumn,
-          items: sourceItems,
-        },
-        [destination.droppableId]: {
-          ...destColumn,
-          items: destItems,
-        },
-      });
     } else {
-      const column = columns[source.droppableId];
-      const copiedItems = [...column.items];
-      const [removed] = copiedItems.splice(source.index, 1);
-      copiedItems.splice(destination.index, 0, removed);
-      setColumns({
-        ...columns,
-        [source.droppableId]: {
-          ...column,
-          items: copiedItems,
-        },
-      });
+      destItems.splice(destination.index, 0, removed);
     }
+
+    setColumns({
+      ...columns,
+      [source.droppableId]: {
+        ...sourceColumn,
+        items: sourceItems,
+      },
+      [destination.droppableId]: {
+        ...destColumn,
+        items: destItems,
+      },
+    });
+  };
+
+  const addTask = (columnId) => {
+    if (!newTask.trim()) return; // Prevent adding empty tasks
+    const newTaskObject = { id: `task-${Date.now()}`, content: newTask };
+    const updatedColumn = { ...columns[columnId], items: [...columns[columnId].items, newTaskObject] };
+
+    setColumns({ ...columns, [columnId]: updatedColumn });
+    setNewTask(''); // Reset input field
   };
 
   return (
     <div className="task-board">
-      <DragDropContext
-        onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-      >
-        {Object.entries(columns).map(([columnId, column], index) => {
-          return (
-            <div className="column" key={columnId}>
-              <h2>{column.name}</h2>
-              <Droppable droppableId={columnId} key={columnId}>
-                {(provided, snapshot) => (
-                  <div
-                    className={`task-list ${
-                      snapshot.isDraggingOver ? 'dragging' : ''
-                    }`}
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {column.items.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            className={`task-item ${
-                              snapshot.isDragging ? 'dragging' : ''
-                            }`}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            {item.content}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </div>
-          );
-        })}
+      <input
+        type="text"
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+        placeholder="Add new task"
+      />
+      <button onClick={() => addTask('unplanned')}>Add Task to Unplanned</button>
+      <DragDropContext onDragEnd={onDragEnd}>
+        {Object.entries(columns).map(([columnId, column]) => (
+          <div className="column" key={columnId}>
+            <h2>{column.name}</h2>
+            <Droppable droppableId={columnId} key={columnId}>
+              {(provided, snapshot) => (
+                <div
+                  className={`task-list ${snapshot.isDraggingOver ? 'dragging' : ''}`}
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {column.items.map((item, index) => (
+                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                      {(provided, snapshot) => (
+                        <div
+                          className={`task-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          {item.content}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
+        ))}
       </DragDropContext>
     </div>
   );
